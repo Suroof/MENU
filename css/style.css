@@ -238,7 +238,7 @@ nav {
 }
 
 .bike-images {
-    position: absolute;  
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -538,8 +538,43 @@ nav {
 }
 
 @media (max-width: 768px) {
+    .hero {
+        height: auto;
+        min-height: 100vh;
+        padding: 80px 20px;
+    }
+
+    .text-overlay {
+        padding: 0 20px;
+    }
+
     .big-text {
-        font-size: 100px;
+        font-size: 48px;
+        letter-spacing: -2px;
+        gap: 5px;
+    }
+
+    .subtitle {
+        font-size: 32px;
+        right: auto;
+        bottom: -20px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero-content {
+        position: relative;
+        bottom: auto;
+        padding: 40px 20px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .bike-images {
+        display: none;
     }
 
     .subtitle {
@@ -553,6 +588,113 @@ nav {
 
     .cookie-consent {
         flex-direction: column;
+        text-align: center;
+    }
+
+    header {
+        padding: 15px 20px;
+    }
+
+    nav {
+        gap: 15px;
+    }
+
+    .nav-right {
+        gap: 15px;
+    }
+
+    .email {
+        display: none;
+    }
+
+    .logo img {
+        height: 30px;
+    }
+
+    .language {
+        gap: 10px;
+    }
+
+    .language a {
+        font-size: 12px;
+    }
+
+    .menu-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .carousel {
+        height: auto;
+        min-height: 80vh;
+    }
+
+    .carousel-slide {
+        width: 100%;
+        height: 70vh;
+        position: relative;
+        left: 0 !important;
+        opacity: 0;
+        transform: none !important;
+        transition: opacity 0.5s ease;
+    }
+
+    .carousel-slide.active {
+        opacity: 1;
+        z-index: 2;
+    }
+
+    .carousel-slide.prev,
+    .carousel-slide.next {
+        display: none;
+    }
+
+    .slide-text h1 {
+        font-size: 36px;
+    }
+
+    .slide-text h2 {
+        font-size: 16px;
+    }
+
+    .slide-text p {
+        font-size: 14px;
+        padding: 0 20px;
+    }
+
+    .service-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .service {
+        height: 250px;
+    }
+
+    .service img {
+        height: 250px;
+    }
+
+    .service h3 {
+        font-size: 20px;
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .service-description {
+        padding: 0 20px;
+        font-size: 16px;
+    }
+
+    .service-types {
+        flex-direction: column;
+        gap: 15px;
+        padding: 0 20px;
+    }
+
+    .service-type {
+        width: 100%;
         text-align: center;
     }
 }
@@ -875,7 +1017,7 @@ body.loaded .hero {
         padding: 40px 20px;
         perspective: none;
     }
-    
+
     .info-card {
         position: relative;
         width: 90%;
@@ -885,19 +1027,19 @@ body.loaded .hero {
         transform: translateY(50px);
         opacity: 0;
     }
-    
+
     .info-card.animate {
         transform: translateY(0);
         opacity: 1;
     }
-    
+
     .info-card:nth-child(1).animate,
     .info-card:nth-child(2).animate,
     .info-card:nth-child(3).animate,
     .info-card:nth-child(4).animate {
         transform: translateY(0) rotate(0);
     }
-    
+
     .info-card:hover {
         transform: translateY(-10px) scale(1.05) !important;
     }
@@ -1395,4 +1537,90 @@ section {
 .contact,
 .faq {
     background: transparent;
+}
+
+@media (max-width: 768px) {
+    .why-choose {
+        padding: 60px 20px;
+    }
+
+    .section-title {
+        font-size: 32px;
+        margin-bottom: 40px;
+    }
+
+    .cards-deck {
+        height: auto;
+        padding: 20px;
+    }
+
+    .info-card {
+        width: 100%;
+        height: 300px;
+        margin: 10px 0;
+        transform: none !important;
+    }
+
+    .info-card.animate {
+        transform: none !important;
+    }
+
+    .card-number {
+        font-size: 2rem;
+    }
+
+    .info-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .info-card p {
+        font-size: 0.9rem;
+    }
+
+    .contact {
+        padding: 60px 20px;
+    }
+
+    .contact-buttons {
+        gap: 15px;
+    }
+
+    .contact-button,
+    .phone-button,
+    .email-button {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 20px;
+    }
+
+    .menu-overlay {
+        padding: 60px 20px;
+    }
+
+    .menu-nav a {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 28px;
+    }
+
+    .big-text {
+        font-size: 36px;
+    }
+
+    .subtitle {
+        font-size: 24px;
+    }
+
+    .slide-text h1 {
+        font-size: 28px;
+    }
+
+    .explore-btn {
+        padding: 10px 20px;
+        font-size: 12px;
+    }
 }
