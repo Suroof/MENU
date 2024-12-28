@@ -33,16 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
         bikeImageElements.forEach((image) => {
             // 检查图片是否在文字上方（z-index为3的图片）
             const isTopLayer = window.getComputedStyle(image).zIndex === '3';
-            
+
             // 文字上方的图片速度更快
             const speed = isTopLayer ? 0.8 : 0.3;
-            
+
             // 所有图片都向上移动（使用负值）
             const translateY = -scrollTop * speed;
             const randomOffset = Math.sin(scrollTop * 0.001) * 5;
-            
+
             image.style.transform = `translateY(${translateY + randomOffset}px)`;
-            
+
             // 调整透明度
             const opacity = Math.max(0.8, 1 - (Math.abs(translateY) * 0.0005));
             image.style.opacity = opacity;
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cards.forEach((card, index) => {
                     setTimeout(() => {
                         card.classList.add('animate');
-                    }, index * 150); // 每张卡片延迟150ms
+                    }, index * 200); // 增加延迟时间到200ms
                 });
             } else {
                 // 当卡片区域离开视图时，移除动画类
@@ -149,13 +149,70 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, {
-        threshold: 0.3, // 当30%的内容可见时触发
-        rootMargin: '0px 0px -100px 0px' // 提前触发动画
+        threshold: 0.5, // 增加阈值到0.5，确保更多内容可见时才触发
+        rootMargin: '-50px 0px' // 调整触发位置
     });
 
     // 开始观察
     if (cardsSection) {
         cardsObserver.observe(cardsSection);
+    }
+
+    // 添加鼠标移动效果
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+
+    // 移动端卡片翻转
+    if (window.innerWidth <= 768) {
+        const cards = document.querySelectorAll('.info-card');
+        
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                // 如果其他卡片正在翻转，先重置它们
+                cards.forEach(otherCard => {
+                    if (otherCard !== card && otherCard.classList.contains('flipped')) {
+                        otherCard.classList.remove('flipped');
+                    }
+                });
+                
+                // 翻转当前卡片
+                card.classList.toggle('flipped');
+            });
+        });
+
+        // 添加触摸结束事件来改善移动端体验
+        cards.forEach(card => {
+            card.addEventListener('touchend', (e) => {
+                e.preventDefault(); // 防止触发点击事件
+                
+                // 如果其他卡片正在翻转，先重置它们
+                cards.forEach(otherCard => {
+                    if (otherCard !== card && otherCard.classList.contains('flipped')) {
+                        otherCard.classList.remove('flipped');
+                    }
+                });
+                
+                // 翻转当前卡片
+                card.classList.toggle('flipped');
+            });
+        });
     }
 
     // Carousel functionality
@@ -261,4 +318,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize carousel
     initCarousel();
+
+    // Mobile card stack functionality
+    function initializeCardStack() {
+        if (window.innerWidth <= 768) {
+            const cards = document.querySelectorAll('.info-card');
+            cards.forEach((card, index) => {
+                card.classList.add(`stacked-${index + 1}`);
+            });
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        const currentPosition = parseInt(card.className.match(/stacked-(\d)/)[1]);
+                        card.classList.add('moving-down');
+                        
+                        setTimeout(() => {
+                            cards.forEach(c => {
+                                const pos = parseInt(c.className.match(/stacked-(\d)/)[1]);
+                                c.classList.remove(`stacked-${pos}`);
+                                let newPos = pos - 1;
+                                if (newPos < 1) newPos = 4;
+                                if (c === card) newPos = 4;
+                                c.classList.add(`stacked-${newPos}`);
+                            });
+                            card.classList.remove('moving-down');
+                        }, 500);
+                    }
+                });
+            });
+        }
+    }
+
+    // Initialize card stack on load and resize
+    window.addEventListener('load', initializeCardStack);
+    window.addEventListener('resize', initializeCardStack);
 });
