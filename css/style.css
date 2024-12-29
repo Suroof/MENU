@@ -249,10 +249,11 @@ nav {
 .bike-image {
     position: absolute;
     background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
     width: 200px;
     height: 300px;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .bike-image.left-top {
@@ -270,12 +271,6 @@ nav {
 .bike-image.left-bottom {
     top: 70%;
     left: 5%;
-    z-index: 3;
-}
-
-.bike-image.right-top {
-    top: 15%;
-    right: 5%;
     z-index: 3;
 }
 
@@ -325,6 +320,82 @@ nav {
 
 .bike-image:hover {
     opacity: 1;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .bike-image {
+        width: 150px;  /* 调整宽度 */
+        height: 200px; /* 调整高度 */
+        opacity: 0.8;  /* 略微透明 */
+        transition: all 0.3s ease;
+    }
+
+    /* 重新排列位置 */
+    .bike-image.left-top {
+        top: 15%;
+        left: 5%;
+    }
+
+    .bike-image.left-middle {
+        top: 35%;
+        left: 15%;
+    }
+
+    .bike-image.left-bottom {
+        top: 55%;
+        left: 5%;
+    }
+
+    .bike-image.right-middle {
+        top: 25%;
+        right: 5%;
+    }
+
+    .bike-image.right-bottom {
+        top: 45%;
+        right: 5%;
+    }
+
+    /* 添加触摸反馈 */
+    .bike-image:active {
+        transform: scale(0.95);
+        opacity: 1;
+    }
+}
+
+/* 小屏幕进一步优化 */
+@media (max-width: 480px) {
+    .bike-image {
+        width: 120px;  /* 更小的宽度 */
+        height: 160px; /* 更小的高度 */
+    }
+
+    /* 进一步调整位置，确保不重叠 */
+    .bike-image.left-top {
+        top: 20%;
+        left: 5%;
+    }
+
+    .bike-image.left-middle {
+        top: 40%;
+        left: 10%;
+    }
+
+    .bike-image.left-bottom {
+        top: 60%;
+        left: 5%;
+    }
+
+    .bike-image.right-middle {
+        top: 30%;
+        right: 5%;
+    }
+
+    .bike-image.right-bottom {
+        top: 50%;
+        right: 5%;
+    }
 }
 
 /* 添加微妙的渐变叠加 */
@@ -1078,35 +1149,135 @@ body.loaded .hero {
 
 /* Contact Section */
 .contact {
-    padding: 100px 40px;
-    background-color: transparent;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.video-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 20%;
+    left: 0;
+    object-position: center -90%; /* 聚焦在视频上方 */
+}
+
+.contact-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 20px;
     text-align: center;
+}
+
+.contact .section-title {
+    font-size: 48px;
+    margin-bottom: 30px;
+    color: var(--white);
+}
+
+.contact .section-description {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    color: var(--white);
+    max-width: 800px;
+    margin: 0 auto 50px;
 }
 
 .contact-buttons {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 20px;
+    align-items: center;
 }
 
-.contact-button,
-.phone-button,
-.email-button {
-    color: var(--white);
-    text-decoration: none;
-    font-size: 18px;
+.contact-button {
+    display: inline-block;
     padding: 15px 40px;
-    border: 2px solid var(--white);
-    border-radius: 30px;
-    transition: all 0.3s ease;
-}
-
-.contact-button:hover,
-.phone-button:hover,
-.email-button:hover {
     background: var(--white);
     color: var(--dark);
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 250px;
+}
+
+.contact-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .contact {
+        min-height: 100vh;
+    }
+
+    .contact-content {
+        padding: 80px 20px;
+    }
+
+    .contact .section-title {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .contact .section-description {
+        font-size: 16px;
+        padding: 0 20px;
+    }
+
+    .contact-button {
+        width: 90%;
+        max-width: 300px;
+        padding: 12px 30px;
+    }
+
+    .video-background video {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+/* 确保在较大屏幕上视频也能完整显示 */
+@media (min-width: 1920px) {
+    .contact {
+        min-height: 800px;
+    }
+
+    .contact-content {
+        padding: 150px 20px;
+    }
 }
 
 /* Footer */
