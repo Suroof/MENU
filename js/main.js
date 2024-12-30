@@ -2,49 +2,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // 背景音乐控制
     const musicBtn = document.querySelector('.music-btn');
     const bgMusic = document.getElementById('bgMusic');
+    const playPrompt = document.querySelector('.play-prompt');
     let isMusicPlaying = false;
 
     // 设置初始音量（0.0 到 1.0 之间）
     bgMusic.volume = 0.1;
 
-    // 强制自动播放函数
-    async function forceAutoplay() {
-        try {
-            // 先将音频静音
-            bgMusic.muted = true;
-            // 尝试播放
-            await bgMusic.play();
-            // 播放成功后取消静音
-            setTimeout(() => {
-                bgMusic.muted = false;
-                isMusicPlaying = true;
-                musicBtn.classList.add('playing');
-                musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-            }, 100);
-        } catch (error) {
-            console.log("Force autoplay failed:", error);
-            // 如果还是失败，添加用户交互事件监听
-            const startAudio = () => {
-                bgMusic.muted = false;
-                bgMusic.play();
-                isMusicPlaying = true;
-                musicBtn.classList.add('playing');
-                musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-                // 移除所有事件监听器
-                ['click', 'touchstart', 'keydown'].forEach(event => {
-                    document.removeEventListener(event, startAudio);
-                });
-            };
-
-            // 添加多个事件监听器以提高成功率
-            ['click', 'touchstart', 'keydown'].forEach(event => {
-                document.addEventListener(event, startAudio, { once: true });
-            });
-        }
+    // 准备音频
+    function prepareAudio() {
+        bgMusic.load();
+        bgMusic.currentTime = 0;
     }
 
-    // 页面加载完成后立即尝试强制自动播放
-    forceAutoplay();
+    // 播放音频
+    function playAudio() {
+        bgMusic.play()
+            .then(() => {
+                isMusicPlaying = true;
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                // 隐藏提示遮罩
+                playPrompt.classList.add('hidden');
+            })
+            .catch(error => {
+                console.log("Playback failed:", error);
+            });
+    }
+
+    // 初始化音频
+    prepareAudio();
+
+    // 点击提示遮罩时开始播放
+    playPrompt.addEventListener('click', () => {
+        playAudio();
+    });
 
     // 音乐播放控制函数
     function toggleMusic() {
@@ -53,12 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             musicBtn.innerHTML = '♪';
         } else {
-            bgMusic.muted = false;
-            bgMusic.play().catch(error => {
-                console.log("Audio play failed:", error);
-            });
-            musicBtn.classList.add('playing');
-            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+            playAudio();
         }
         isMusicPlaying = !isMusicPlaying;
     }
@@ -80,10 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             isMusicPlaying = false;
         } else if (!document.hidden && isMusicPlaying) {
-            bgMusic.muted = false;
-            bgMusic.play();
-            musicBtn.classList.add('playing');
-            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+            playAudio();
         }
     });
 
