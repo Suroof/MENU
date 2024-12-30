@@ -1,4 +1,46 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 背景音乐控制
+    const musicBtn = document.querySelector('.music-btn');
+    const bgMusic = document.getElementById('bgMusic');
+    let isMusicPlaying = false;
+
+    // 设置初始音量（0.0 到 1.0 之间）
+    bgMusic.volume = 0.1; // 这里设置音量为 30%
+
+    // 音乐播放控制函数
+    function toggleMusic() {
+        if (isMusicPlaying) {
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+            musicBtn.innerHTML = '♪';
+        } else {
+            bgMusic.play().catch(error => {
+                console.log("Audio play failed:", error);
+            });
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+        }
+        isMusicPlaying = !isMusicPlaying;
+    }
+
+    // 添加点击事件监听器
+    musicBtn.addEventListener('click', toggleMusic);
+
+    // 监听音乐播放结束事件
+    bgMusic.addEventListener('ended', () => {
+        musicBtn.classList.remove('playing');
+        isMusicPlaying = false;
+    });
+
+    // 页面可见性改变时的处理
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && isMusicPlaying) {
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+            isMusicPlaying = false;
+        }
+    });
+
     // Menu handling
     const menuBtn = document.querySelector('.menu-btn');
     const menuOverlay = document.querySelector('.menu-overlay');
@@ -182,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 移动端卡片翻转
     if (window.innerWidth <= 768) {
         const cards = document.querySelectorAll('.info-card');
-        
+
         cards.forEach(card => {
             card.addEventListener('click', () => {
                 // 如果其他卡片正在翻转，先重置它们
@@ -191,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         otherCard.classList.remove('flipped');
                     }
                 });
-                
+
                 // 翻转当前卡片
                 card.classList.toggle('flipped');
             });
@@ -201,14 +243,14 @@ document.addEventListener('DOMContentLoaded', () => {
         cards.forEach(card => {
             card.addEventListener('touchend', (e) => {
                 e.preventDefault(); // 防止触发点击事件
-                
+
                 // 如果其他卡片正在翻转，先重置它们
                 cards.forEach(otherCard => {
                     if (otherCard !== card && otherCard.classList.contains('flipped')) {
                         otherCard.classList.remove('flipped');
                     }
                 });
-                
+
                 // 翻转当前卡片
                 card.classList.toggle('flipped');
             });
@@ -332,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (window.innerWidth <= 768) {
                         const currentPosition = parseInt(card.className.match(/stacked-(\d)/)[1]);
                         card.classList.add('moving-down');
-                        
+
                         setTimeout(() => {
                             cards.forEach(c => {
                                 const pos = parseInt(c.className.match(/stacked-(\d)/)[1]);
