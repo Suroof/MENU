@@ -156,6 +156,71 @@ nav {
     transform: scale(1.05);
 }
 
+.music-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    font-size: 24px;
+    padding: 5px;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.music-btn:hover {
+    opacity: 1;
+}
+
+.music-btn.playing {
+    color: var(--mint);
+    opacity: 1;
+    width: auto;
+}
+
+/* 音量条样式 */
+.music-btn .bar1,
+.music-btn .bar2,
+.music-btn .bar3 {
+    display: inline-block;
+    width: 3px;
+    height: 15px;
+    background-color: var(--mint);
+    margin: 0 2px;
+    border-radius: 3px;
+    animation: soundBars 1.2s ease-in-out infinite;
+}
+
+.music-btn .bar1 {
+    animation-delay: 0s;
+}
+
+.music-btn .bar2 {
+    animation-delay: 0.4s;
+    height: 20px;
+}
+
+.music-btn .bar3 {
+    animation-delay: 0.8s;
+}
+
+@keyframes soundBars {
+    0% {
+        transform: scaleY(0.5);
+    }
+    50% {
+        transform: scaleY(1);
+    }
+    100% {
+        transform: scaleY(0.5);
+    }
+}
+
 /* Hero Section */
 .hero {
     position: relative;
@@ -499,6 +564,7 @@ nav {
     .bike-image.right-bottom {
         top: 65%;
         right: 5%;
+        height: 150px;
     }
 }
 
