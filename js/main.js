@@ -44,7 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             musicBtn.innerHTML = '♪';
         } else {
-            playAudio();
+            bgMusic.play().catch(error => {
+                console.log("Audio play failed:", error);
+            });
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
         }
         isMusicPlaying = !isMusicPlaying;
     }
