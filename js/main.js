@@ -2,10 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 背景音乐控制
     const musicBtn = document.querySelector('.music-btn');
     const bgMusic = document.getElementById('bgMusic');
-    const playPrompt = document.querySelector('.play-prompt');
+    const musicPrompt = document.querySelector('.music-prompt');
     let isMusicPlaying = false;
 
-    // 设置初始音量（0.0 到 1.0 之间）
+    // 设置初始音量
     bgMusic.volume = 0.1;
 
     // 准备音频
@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 isMusicPlaying = true;
                 musicBtn.classList.add('playing');
                 musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-                // 隐藏提示遮罩
-                playPrompt.classList.add('hidden');
+                // 隐藏引导遮罩
+                musicPrompt.classList.add('hidden');
             })
             .catch(error => {
                 console.log("Playback failed:", error);
@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初始化音频
     prepareAudio();
 
-    // 点击提示遮罩时开始播放
-    playPrompt.addEventListener('click', () => {
+    // 点击遮罩开始播放
+    musicPrompt.addEventListener('click', () => {
         playAudio();
     });
 
@@ -44,11 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             musicBtn.innerHTML = '♪';
         } else {
-            bgMusic.play().catch(error => {
-                console.log("Audio play failed:", error);
-            });
-            musicBtn.classList.add('playing');
-            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+            playAudio();
         }
         isMusicPlaying = !isMusicPlaying;
     }
