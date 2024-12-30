@@ -2,77 +2,72 @@ document.addEventListener('DOMContentLoaded', () => {
     // 背景音乐控制
     const musicBtn = document.querySelector('.music-btn');
     const bgMusic = document.getElementById('bgMusic');
-    const musicPrompt = document.querySelector('.music-prompt');
     let isMusicPlaying = false;
 
-    // 设置初始音量
+    // 设置初始音量（0.0 到 1.0 之间）
     bgMusic.volume = 0.1;
 
-    // 播放音频
-    function playAudio() {
-        const playPromise = bgMusic.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
+    // 尝试自动播放
+    function tryAutoplay() {
+        bgMusic.play().then(() => {
+            isMusicPlaying = true;
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+        }).catch(error => {
+            console.log("Autoplay failed:", error);
+            // 如果自动播放失败，添加一次性点击事件监听器
+            document.addEventListener('click', function initPlay() {
+                bgMusic.play();
                 isMusicPlaying = true;
                 musicBtn.classList.add('playing');
                 musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-                musicPrompt.classList.add('hidden');
-            }).catch(error => {
-                console.log("Playback failed:", error);
-                // 如果自动播放失败，保持提示可见
-                musicPrompt.classList.remove('hidden');
-            });
-        }
+                // 移除这个一次性事件监听器
+                document.removeEventListener('click', initPlay);
+            }, { once: true });
+        });
     }
 
-    // 停止音频
-    function pauseAudio() {
-        bgMusic.pause();
-        musicBtn.classList.remove('playing');
-        musicBtn.innerHTML = '♪';
-        isMusicPlaying = false;
-    }
+    // 页面加载完成后尝试自动播放
+    window.addEventListener('load', tryAutoplay);
 
-    // 点击任意位置开始播放
-    document.addEventListener('click', function initAudio() {
-        if (!isMusicPlaying) {
-            playAudio();
-            // 移除这个一次性的点击事件监听器
-            document.removeEventListener('click', initAudio);
-        }
-    }, { once: true });
-
-    // 点击遮罩开始播放
-    musicPrompt.addEventListener('click', (e) => {
-        e.stopPropagation(); // 防止事件冒泡
-        playAudio();
-    });
-
-    // 音乐按钮控制
-    musicBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // 防止事件冒泡
+    // 音乐播放控制函数
+    function toggleMusic() {
         if (isMusicPlaying) {
-            pauseAudio();
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+            musicBtn.innerHTML = '♪';
         } else {
-            playAudio();
+            bgMusic.play().catch(error => {
+                console.log("Audio play failed:", error);
+            });
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
         }
+        isMusicPlaying = !isMusicPlaying;
+    }
+
+    // 添加点击事件监听器
+    musicBtn.addEventListener('click', toggleMusic);
+
+    // 监听音乐播放结束事件
+    bgMusic.addEventListener('ended', () => {
+        // 由于设置了loop属性，这个事件实际上不会触发
+        musicBtn.classList.remove('playing');
+        isMusicPlaying = false;
     });
 
-    // 监听页面可见性变化
+    // 页面可见性改变时的处理
     document.addEventListener('visibilitychange', () => {
         if (document.hidden && isMusicPlaying) {
-            pauseAudio();
-        } else if (!document.hidden && !isMusicPlaying) {
-            // 当页面重新可见时，显示音乐提示
-            musicPrompt.classList.remove('hidden');
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+            isMusicPlaying = false;
+        } else if (!document.hidden && isMusicPlaying) {
+            // 当页面重新可见时，如果之前在播放就恢复播放
+            bgMusic.play();
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
         }
-    });
-
-    // 处理音频加载错误
-    bgMusic.addEventListener('error', (e) => {
-        console.error('Audio loading error:', e);
-        musicPrompt.classList.add('hidden');
     });
 
     // Menu handling
