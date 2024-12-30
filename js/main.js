@@ -5,7 +5,46 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMusicPlaying = false;
 
     // 设置初始音量（0.0 到 1.0 之间）
-    bgMusic.volume = 0.1; // 这里设置音量为 30%
+    bgMusic.volume = 0.1;
+
+    // 强制自动播放函数
+    async function forceAutoplay() {
+        try {
+            // 先将音频静音
+            bgMusic.muted = true;
+            // 尝试播放
+            await bgMusic.play();
+            // 播放成功后取消静音
+            setTimeout(() => {
+                bgMusic.muted = false;
+                isMusicPlaying = true;
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+            }, 100);
+        } catch (error) {
+            console.log("Force autoplay failed:", error);
+            // 如果还是失败，添加用户交互事件监听
+            const startAudio = () => {
+                bgMusic.muted = false;
+                bgMusic.play();
+                isMusicPlaying = true;
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                // 移除所有事件监听器
+                ['click', 'touchstart', 'keydown'].forEach(event => {
+                    document.removeEventListener(event, startAudio);
+                });
+            };
+
+            // 添加多个事件监听器以提高成功率
+            ['click', 'touchstart', 'keydown'].forEach(event => {
+                document.addEventListener(event, startAudio, { once: true });
+            });
+        }
+    }
+
+    // 页面加载完成后立即尝试强制自动播放
+    forceAutoplay();
 
     // 音乐播放控制函数
     function toggleMusic() {
@@ -14,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             musicBtn.innerHTML = '♪';
         } else {
+            bgMusic.muted = false;
             bgMusic.play().catch(error => {
                 console.log("Audio play failed:", error);
             });
@@ -28,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 监听音乐播放结束事件
     bgMusic.addEventListener('ended', () => {
+        // 由于设置了loop属性，这个事件实际上不会触发
         musicBtn.classList.remove('playing');
         isMusicPlaying = false;
     });
@@ -38,6 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
             bgMusic.pause();
             musicBtn.classList.remove('playing');
             isMusicPlaying = false;
+        } else if (!document.hidden && isMusicPlaying) {
+            bgMusic.muted = false;
+            bgMusic.play();
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
         }
     });
 
