@@ -4,31 +4,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgMusic = document.getElementById('bgMusic');
     let isMusicPlaying = false;
 
-    // 设置初始音量（0.0 到 1.0 之间）
+    // 设置初始音量
     bgMusic.volume = 0.1;
 
-    // 尝试自动播放
-    function tryAutoplay() {
-        bgMusic.play().then(() => {
-            isMusicPlaying = true;
-            musicBtn.classList.add('playing');
-            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-        }).catch(error => {
-            console.log("Autoplay failed:", error);
-            // 如果自动播放失败，添加一次性点击事件监听器
-            document.addEventListener('click', function initPlay() {
-                bgMusic.play();
-                isMusicPlaying = true;
-                musicBtn.classList.add('playing');
-                musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-                // 移除这个一次性事件监听器
-                document.removeEventListener('click', initPlay);
-            }, { once: true });
-        });
+    // 音频加载状态检查
+    bgMusic.addEventListener('loadeddata', () => {
+        console.log('Audio file loaded successfully');
+    });
+
+    bgMusic.addEventListener('error', (e) => {
+        console.error('Audio loading error:', e);
+    });
+
+    // 处理用户交互后的音频播放
+    function handleUserInteraction() {
+        if (!isMusicPlaying) {
+            bgMusic.play()
+                .then(() => {
+                    isMusicPlaying = true;
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                })
+                .catch(error => {
+                    console.error("Play failed:", error);
+                });
+        }
     }
 
-    // 页面加载完成后尝试自动播放
-    window.addEventListener('load', tryAutoplay);
+    // 添加多个用户交互事件监听器
+    ['click', 'touchstart', 'scroll', 'keydown'].forEach(eventType => {
+        document.addEventListener(eventType, handleUserInteraction, { once: true });
+    });
 
     // 音乐播放控制函数
     function toggleMusic() {
@@ -37,11 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             musicBtn.innerHTML = '♪';
         } else {
-            bgMusic.play().catch(error => {
-                console.log("Audio play failed:", error);
-            });
-            musicBtn.classList.add('playing');
-            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+            bgMusic.play()
+                .then(() => {
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                })
+                .catch(error => {
+                    console.error("Play failed:", error);
+                });
         }
         isMusicPlaying = !isMusicPlaying;
     }
@@ -51,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 监听音乐播放结束事件
     bgMusic.addEventListener('ended', () => {
-        // 由于设置了loop属性，这个事件实际上不会触发
         musicBtn.classList.remove('playing');
         isMusicPlaying = false;
     });
@@ -63,10 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             isMusicPlaying = false;
         } else if (!document.hidden && isMusicPlaying) {
-            // 当页面重新可见时，如果之前在播放就恢复播放
-            bgMusic.play();
-            musicBtn.classList.add('playing');
-            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+            bgMusic.play()
+                .then(() => {
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                })
+                .catch(error => {
+                    console.error("Resume playback failed:", error);
+                });
         }
     });
 
