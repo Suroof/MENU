@@ -4,37 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgMusic = document.getElementById('bgMusic');
     let isMusicPlaying = false;
 
-    // 设置初始音量
-    bgMusic.volume = 0.1;
-
-    // 音频加载状态检查
-    bgMusic.addEventListener('loadeddata', () => {
-        console.log('Audio file loaded successfully');
-    });
-
-    bgMusic.addEventListener('error', (e) => {
-        console.error('Audio loading error:', e);
-    });
-
-    // 处理用户交互后的音频播放
-    function handleUserInteraction() {
-        if (!isMusicPlaying) {
-            bgMusic.play()
-                .then(() => {
-                    isMusicPlaying = true;
-                    musicBtn.classList.add('playing');
-                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-                })
-                .catch(error => {
-                    console.error("Play failed:", error);
-                });
-        }
-    }
-
-    // 添加多个用户交互事件监听器
-    ['click', 'touchstart', 'scroll', 'keydown'].forEach(eventType => {
-        document.addEventListener(eventType, handleUserInteraction, { once: true });
-    });
+    // 设置初始音量（0.0 到 1.0 之间）
+    bgMusic.volume = 0.1; // 这里设置音量为 30%
 
     // 音乐播放控制函数
     function toggleMusic() {
@@ -43,14 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
             musicBtn.classList.remove('playing');
             musicBtn.innerHTML = '♪';
         } else {
-            bgMusic.play()
-                .then(() => {
-                    musicBtn.classList.add('playing');
-                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
-                })
-                .catch(error => {
-                    console.error("Play failed:", error);
-                });
+            bgMusic.play().catch(error => {
+                console.log("Audio play failed:", error);
+            });
+            musicBtn.classList.add('playing');
+            musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
         }
         isMusicPlaying = !isMusicPlaying;
     }
