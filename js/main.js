@@ -1,314 +1,439 @@
-<!DOCTYPE html>
-<html lang="en">
+document.addEventListener('DOMContentLoaded', () => {
+    // 背景音乐控制
+    const musicBtn = document.querySelector('.music-btn');
+    const bgMusic = document.getElementById('bgMusic');
+    let isMusicPlaying = false;
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receiven&Diego</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Dancing+Script&display=swap"
-    rel="stylesheet" />
-</head>
+    // 设置初始音量
+    bgMusic.volume = 0.1;
 
-<body>
-  <header>
-    <nav>
-      <div class="email">
-        <a href="https://pic1.imgdb.cn/item/674a8877d0e0a243d4db5b8c.jpg">By Srf & Lxw</a>
-      </div>
-      <div class="logo">
-        <img src="images/logo.png" alt="Color Monkey" />
-      </div>
-      <div class="nav-right">
-        <div class="language">
-          <a href="https://pic1.imgdb.cn/item/674a88d6d0e0a243d4db5b99.jpg" class="active">GZ</a>
-          <a href="https://pic1.imgdb.cn/item/67702540d0e0a243d4ec02ad.jpg">DG</a>
-          <a href="https://pic1.imgdb.cn/item/67702567d0e0a243d4ec02b1.jpg">50</a>
-        </div>
-        <button class="music-btn">♪</button>
-        <button class="menu-btn">MENU</button>
-      </div>
-    </nav>
-    <audio id="bgMusic" loop preload="auto" playsinline>
-      <source src="./music/background.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </header>
+    // 音频加载状态检查
+    bgMusic.addEventListener('loadeddata', () => {
+        console.log('Audio file loaded successfully');
+    });
 
-  <main>
-    <section class="hero">
-      <div class="text-overlay">
-        <h1 class="big-text">
-          <span class="j">S</span>
-          <span class="o">R</span>
-          <span class="u">F</span>
-          <span class="w">&</span>
-          <span class="m">L</span>
-          <span class="m">X</span>
-          <span class="m">W</span>
-        </h1>
-        <div class="subtitle">Exquisite singularity</div>
-      </div>
-      <div class="hero-content">
-        <p class="hero-description">I'll be on the way</p>
-      </div>
-      <div class="bike-images">
-        <div class="bike-image left-top" style="background-image: url('images/bike1.jpg')"></div>
-        <div class="bike-image left-middle" style="background-image: url('images/bike2.jpg')"></div>
-        <div class="bike-image left-bottom" style="background-image: url('images/bike3.jpg')"></div>
-        <!-- <div class="bike-image right-top" style="background-image: url('images/bike4.jpg')"></div> -->
-        <div class="bike-image right-middle" style="background-image: url('images/bike5.jpg')"></div>
-        <div class="bike-image right-bottom" style="background-image: url('images/bike6.jpg')"></div>
-      </div>
-    </section>
+    bgMusic.addEventListener('error', (e) => {
+        console.error('Audio loading error:', e);
+    });
 
-    <!-- 轮播图-->
-    <section class="carousel">
-      <div class="carousel-container">
-        <div class="carousel-track">
-          <div class="carousel-slide">
-            <div class="carousel-content">
-              <div class="slide-image">
-                <img src="images/slide1.jpg" alt="Untold Stories" />
-              </div>
-              <div class="slide-text">
-                <!-- <h2>WITNESS THE<br />UNTOLD</h2> -->
-                <h1>STORIES</h1>
-                <!-- <p>
-                  (,,・ω・,,)
-                </p> -->
-                <button class="explore-btn">  (,,・ω・,,)</button>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-slide">
-            <div class="carousel-content">
-              <div class="slide-image">
-                <img src="images/slide2.jpg" alt="Neglect" />
-              </div>
-              <div class="slide-text">
-                <!-- <h2>EXPLORE A WORLD OF<br />THE</h2> -->
-                <h1>Explore</h1>
-                <!-- <p>
-                  They trust care homes with their relative's lives. The care
-                  stopped. Dozens died.
-                </p> -->
-                <button class="explore-btn">(♡˙︶˙♡)</button>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-slide">
-            <div class="carousel-content">
-              <div class="slide-image">
-                <img src="images/slide3.jpg" alt="Condemned" />
-              </div>
-              <div class="slide-text">
-                <!-- <h2>EXPLORE A WORLD OF<br />THE</h2> -->
-                <h1>Company</h1>
-                <!-- <p>
-                  In My World began in a prison cell in South Sudan. Robin
-                  Hammond recalls the heartbreak and the conflict that
-                  inspired a campaign.
-                </p> -->
-                <button class="explore-btn">(◕ܫ◕)</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="carousel-navigation">
-        <button class="carousel-prev" aria-label="Previous slide">
-          &lt;
-        </button>
-        <button class="carousel-next" aria-label="Next slide">&gt;</button>
-      </div>
-    </section>
+    // 处理用户交互后的音频播放
+    function handleUserInteraction() {
+        if (!isMusicPlaying) {
+            bgMusic.play()
+                .then(() => {
+                    isMusicPlaying = true;
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                })
+                .catch(error => {
+                    console.error("Play failed:", error);
+                });
+        }
+    }
 
-    <!-- 展示区-->
-    <section class="services">
-      <div class="service-grid">
-        <div class="service">
-          <img src="images/service1.jpg" alt="Service 1" />
-          <h3>🛥️🐱</h3>
-        </div>
-        <div class="service">
-          <img src="images/service2.jpg" alt="Service 2" />
-          <h3>😍💘</h3>
-        </div>
-        <div class="service">
-          <img src="images/service3.jpg" alt="Service 3" />
-          <h3>😜🎀</h3>
-        </div>
-        <div class="service">
-          <img src="images/service4.jpg" alt="Service 4" />
-          <h3>😎~♥</h3>
-        </div>
-      </div>
-      <p class="service-description">
-        It's fucked up I know but i'm still
-      </p>
-      <div class="service-types">
-        <a href="https://pic1.imgdb.cn/item/6770de92d0e0a243d4ec1089.jpg" class="service-type">码头</a>
-        <a href="https://pic1.imgdb.cn/item/6770de5ed0e0a243d4ec1083.jpg" class="service-type">整点</a>
-        <a href="https://pic1.imgdb.cn/item/6770de78d0e0a243d4ec1088.jpg" class="service-type">薯条</a>
-      </div>
-    </section>
+    // 添加多个用户交互事件监听器
+    ['click', 'touchstart', 'scroll', 'keydown'].forEach(eventType => {
+        document.addEventListener(eventType, handleUserInteraction, { once: true });
+    });
 
-    <!-- 卡牌区-->
-    <section class="why-choose">
-      <div class="section-content">
-        <h2 class="section-title">
-          幸福的秘诀是<br />
-          🍸<br />
-          没有精致的妆容摆拍，只有生活的简单抓拍✌️
-        </h2>
-        <div class="cards-deck">
-          <!-- Card 01 -->
-          <div class="info-card">
-            <div class="card-inner">
-              <div class="card-front">
-                <img src="images/card1.jpg" alt="Unieke ontwerpen" class="card-image">
-                <div class="card-overlay"></div>
-                <div class="card-content">
-                  <div class="card-number">01</div>
-                  <h3>Unieke</h3>
-                  <p class="mobile-description">初次见面在广州</p>
-                </div>
-              </div>
-              <div class="card-back pc-only">
-                <img src="images/card1-back.jpg" alt="Unieke ontwerpen detail" class="card-image">
-                <!-- <div class="card-content">
-                  <p>Volledig gepersonaliseerde designs voor jouw fiets, passend bij jouw wensen en stijl.</p>
-                </div> -->
-              </div>
-            </div>
-          </div>
+    // 音乐播放控制函数
+    function toggleMusic() {
+        if (isMusicPlaying) {
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+            musicBtn.innerHTML = '♪';
+        } else {
+            bgMusic.play()
+                .then(() => {
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                })
+                .catch(error => {
+                    console.error("Play failed:", error);
+                });
+        }
+        isMusicPlaying = !isMusicPlaying;
+    }
 
-          <!-- Card 02 -->
-          <div class="info-card">
-            <div class="card-inner">
-              <div class="card-front">
-                <img src="images/card2.jpg" alt="Met passie voor de fietssport" class="card-image">
-                <div class="card-overlay"></div>
-                <div class="card-content">
-                  <div class="card-number">02</div>
-                  <h3>(◕ H ◕)</h3>
-                  <p class="mobile-description">点我!卡片都是可以翻转的</p>
-                </div>
-              </div>
-              <div class="card-back pc-only">
-                <img src="images/card2-back.jpg" alt="Met passie voor de fietssport detail" class="card-image">
-                <!-- <div class="card-content">
-                  <p>Ons team van fietsfanaten stopt hun liefde voor de sport en het vakmanschap in elk ontwerp.</p>-->
-              </div>
-            </div>
-          </div>
+    // 添加点击事件监听器
+    musicBtn.addEventListener('click', toggleMusic);
 
-          <!-- Card 03 -->
-          <div class="info-card">
-            <div class="card-inner">
-              <div class="card-front">
-                <img src="images/card3.jpg" alt="Expert in carbon reparaties" class="card-image">
-                <div class="card-overlay"></div>
-                <div class="card-content">
-                  <div class="card-number">03</div>
-                  <h3>(̿▀̿ ̿Ĺ̯̿̿▀̿ ̿)̄</h3>
-                  <p class="mobile-description">照片并没有按时间顺序</p>
-                </div>
-              </div>
-              <div class="card-back pc-only">
-                <img src="images/card3-back.jpg" alt="Expert in carbon reparaties detail" class="card-image">
-                <!-- <div class="card-content">
-                  <p>We herstellen carbon breuken met precisie en zorg.</p>
-                </div> -->
-              </div>
-            </div>
-          </div>
+    // 监听音乐播放结束事件
+    bgMusic.addEventListener('ended', () => {
+        musicBtn.classList.remove('playing');
+        isMusicPlaying = false;
+    });
 
-          <!-- Card 04 -->
-          <div class="info-card">
-            <div class="card-inner">
-              <div class="card-front">
-                <img src="images/card4.jpg" alt="Premium kwaliteit" class="card-image">
-                <div class="card-overlay"></div>
-                <div class="card-content">
-                  <div class="card-number">04</div>
-                  <h3>(　◜◡‾)</h3>
-                  <p class="mobile-description">一直被骂的拍照技术，现在依旧很烂</p>
-                </div>
-              </div>
-              <div class="card-back pc-only">
-                <img src="images/card4-back.jpg" alt="Premium kwaliteit detail" class="card-image">
-                <!-- <div class="card-content">
-                  <p>We werken alleen met hoogwaardige materialen.</p>
-                </div> -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    // 页面可见性改变时的处理
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && isMusicPlaying) {
+            bgMusic.pause();
+            musicBtn.classList.remove('playing');
+            isMusicPlaying = false;
+        } else if (!document.hidden && isMusicPlaying) {
+            bgMusic.play()
+                .then(() => {
+                    musicBtn.classList.add('playing');
+                    musicBtn.innerHTML = '<span class="bar1"></span><span class="bar2"></span><span class="bar3"></span>';
+                })
+                .catch(error => {
+                    console.error("Resume playback failed:", error);
+                });
+        }
+    });
 
-    <section class="art-on-wheels">
-      <!-- <h2 class="section-title">KUNST OP WIELEN</h2> -->
-      <!-- <p class="section-description">
-        Bij Color Monkey maken we niet zomaar fietsen. We creëren blikvangers
-        waarin jouw persoonlijkheid en stijl terugkomen. Op maat gemaakte
-        fiets? Repareren van carbon breuken? Of een grote batch nodig voor
-        jouw bedrijf? Wij zorgen ervoor dat jouw fiets net zo uniek is als
-        jij!
-      </p> -->
-      <div class="cta-buttons">
-        <a href="https://pic1.imgdb.cn/item/6770dfc5d0e0a243d4ec109f.jpg" class="cta-button">我们的2024</a>
-      </div>
-    </section>
+    // Menu handling
+    const menuBtn = document.querySelector('.menu-btn');
+    const menuOverlay = document.querySelector('.menu-overlay');
+    let isMenuOpen = false;
 
+    menuBtn.addEventListener('click', () => {
+        isMenuOpen = !isMenuOpen;
+        menuBtn.textContent = isMenuOpen ? 'MENU -' : 'MENU +';
+        menuOverlay.classList.toggle('active');
+        document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    });
 
-    <section class="contact">
-      <div class="video-background">
-        <video autoplay muted loop playsinline preload="auto" style="display: block;">
-          <source src="videos/background.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      <div class="contact-content">
-        <h2 class="section-title">一半时间是在吃中度过的٩(｡・ω・｡)﻿و</h2>
-        <p class="section-description">
-          2025
-        </p>
-        <div class="contact-buttons">
-          <a href="https://pic1.imgdb.cn/item/6770bcafd0e0a243d4ec0b9d.jpg" class="contact-button">感谢观看</a>
-          <!-- <a href="#" class="contact-button">BEL +32 54 24 59 68</a>
-          <a href="#" class="contact-button">info@color-monkey.be</a> -->
-        </div>
-      </div>
-    </section>
-  </main>
+    // Enhanced parallax effect for bike images
+    const bikeImages = document.querySelector('.bike-images');
+    const bikeImageElements = document.querySelectorAll('.bike-image');
+    let lastScrollTop = 0;
+    let ticking = false;
 
-  <!-- Menu Overlay -->
-  <div class="menu-overlay">
-    <nav class="menu-nav">
-      <ul>
-        <li><a href="#">HOME</a></li>
-        <li><a href="#">HOE HET WERKT</a></li>
-        <li><a href="#">DIENSTEN</a></li>
-        <li><a href="#">PROJECTEN</a></li>
-        <li><a href="#">CONTACT</a></li>
-      </ul>
-    </nav>
-  </div>
+    window.addEventListener('scroll', () => {
+        lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-  <!-- Cookie Consent -->
-  <div class="cookie-consent">
-    <p>Wij gebruiken cookies</p>
-    <div class="cookie-buttons">
-      <button class="btn-accept">ACCEPTEREN</button>
-      <button class="btn-customize">AANPASSEN</button>
-      <button class="btn-reject">WEIGEREN</button>
-    </div>
-  </div>
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                updateParallaxEffect(lastScrollTop);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
 
-  <script src="js/main.js"></script>
-</body>
+    function updateParallaxEffect(scrollTop) {
+        bikeImageElements.forEach((image) => {
+            // 检查图片是否在文字上方（z-index为3的图片）
+            const isTopLayer = window.getComputedStyle(image).zIndex === '3';
 
-</html>
+            // 文字上方的图片速度更快
+            const speed = isTopLayer ? 0.8 : 0.3;
+
+            // 所有图片都向上移动（使用负值）
+            const translateY = -scrollTop * speed;
+            const randomOffset = Math.sin(scrollTop * 0.001) * 5;
+
+            image.style.transform = `translateY(${translateY + randomOffset}px)`;
+
+            // 调整透明度
+            const opacity = Math.max(0.8, 1 - (Math.abs(translateY) * 0.0005));
+            image.style.opacity = opacity;
+        });
+    }
+
+    // Add hover effect to bike images
+    bikeImageElements.forEach(image => {
+        image.addEventListener('mouseenter', () => {
+            image.style.transform = 'scale(1.05)';
+            image.style.opacity = '1';
+        });
+
+        image.addEventListener('mouseleave', () => {
+            image.style.transform = 'scale(1)';
+            image.style.opacity = '0.8';
+        });
+    });
+
+    // Smooth scroll with enhanced behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition - headerOffset;
+
+                window.scrollBy({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+
+                if (isMenuOpen) {
+                    menuBtn.click();
+                }
+            }
+        });
+    });
+
+    // Enhanced scroll animations
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                if (entry.target.classList.contains('reason')) {
+                    entry.target.style.transitionDelay = `${entry.target.dataset.delay}s`;
+                }
+            }
+        });
+    }, observerOptions);
+
+    // Add fade-in animation to sections with sequential delay
+    document.querySelectorAll('section').forEach((section, index) => {
+        section.classList.add('fade-in');
+        section.style.transitionDelay = `${index * 0.2}s`;
+        observer.observe(section);
+    });
+
+    // Add sequential animation to reasons
+    document.querySelectorAll('.reason').forEach((reason, index) => {
+        reason.classList.add('fade-in');
+        reason.dataset.delay = index * 0.2;
+        observer.observe(reason);
+    });
+
+    // Add loading animation
+    window.addEventListener('load', () => {
+        document.body.classList.add('loaded');
+
+        // Trigger initial animations
+        setTimeout(() => {
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.classList.add('visible');
+            });
+        }, 500);
+    });
+
+    // 卡片动画控制
+    const cards = document.querySelectorAll('.info-card');
+    const cardsSection = document.querySelector('.cards-deck');
+
+    // 创建观察器
+    const cardsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // 当卡片区域进入视图时，依次添加动画类
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate');
+                    }, index * 200); // 增加延迟时间到200ms
+                });
+            } else {
+                // 当卡片区域离开视图时，移除动画类
+                cards.forEach(card => {
+                    card.classList.remove('animate');
+                });
+            }
+        });
+    }, {
+        threshold: 0.5, // 增加阈值到0.5，确保更多内容可见时才触发
+        rootMargin: '-50px 0px' // 调整触发位置
+    });
+
+    // 开始观察
+    if (cardsSection) {
+        cardsObserver.observe(cardsSection);
+    }
+
+    // 添加鼠标移动效果
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+
+    // 移动端卡片翻转
+    if (window.innerWidth <= 768) {
+        const cards = document.querySelectorAll('.info-card');
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                // 如果其他卡片正在翻转，先重置它们
+                cards.forEach(otherCard => {
+                    if (otherCard !== card && otherCard.classList.contains('flipped')) {
+                        otherCard.classList.remove('flipped');
+                    }
+                });
+
+                // 翻转当前卡片
+                card.classList.toggle('flipped');
+            });
+        });
+
+        // 添加触摸结束事件来改善移动端体验
+        cards.forEach(card => {
+            card.addEventListener('touchend', (e) => {
+                e.preventDefault(); // 防止触发点击事件
+
+                // 如果其他卡片正在翻转，先重置它们
+                cards.forEach(otherCard => {
+                    if (otherCard !== card && otherCard.classList.contains('flipped')) {
+                        otherCard.classList.remove('flipped');
+                    }
+                });
+
+                // 翻转当前卡片
+                card.classList.toggle('flipped');
+            });
+        });
+    }
+
+    // Carousel functionality
+    const carousel = document.querySelector('.carousel');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    let currentIndex = 0;
+    let isAnimating = false;
+
+    function initCarousel() {
+        updateSlideClasses();
+    }
+
+    function updateSlideClasses() {
+        slides.forEach((slide, index) => {
+            slide.classList.remove('active', 'prev', 'next');
+            if (index === currentIndex) {
+                slide.classList.add('active');
+            } else if (index === getPrevIndex()) {
+                slide.classList.add('prev');
+            } else if (index === getNextIndex()) {
+                slide.classList.add('next');
+            }
+        });
+    }
+
+    function getPrevIndex() {
+        return (currentIndex - 1 + slides.length) % slides.length;
+    }
+
+    function getNextIndex() {
+        return (currentIndex + 1) % slides.length;
+    }
+
+    function moveSlide(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        if (direction === 'next') {
+            currentIndex = getNextIndex();
+        } else {
+            currentIndex = getPrevIndex();
+        }
+
+        updateSlideClasses();
+
+        // Reset animation flag after transition
+        setTimeout(() => {
+            isAnimating = false;
+        }, 500);
+    }
+
+    // Event listeners
+    prevBtn.addEventListener('click', () => moveSlide('prev'));
+    nextBtn.addEventListener('click', () => moveSlide('next'));
+
+    // Auto advance carousel
+    let autoAdvance = setInterval(() => moveSlide('next'), 5000);
+
+    // Pause auto-advance on hover
+    carousel.addEventListener('mouseenter', () => clearInterval(autoAdvance));
+    carousel.addEventListener('mouseleave', () => {
+        autoAdvance = setInterval(() => moveSlide('next'), 5000);
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carousel.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+        clearInterval(autoAdvance);
+    });
+
+    carousel.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+        autoAdvance = setInterval(() => moveSlide('next'), 5000);
+    });
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                moveSlide('next');
+            } else {
+                moveSlide('prev');
+            }
+        }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') {
+            moveSlide('prev');
+        } else if (e.key === 'ArrowRight') {
+            moveSlide('next');
+        }
+    });
+
+    // Initialize carousel
+    initCarousel();
+
+    // Mobile card stack functionality
+    function initializeCardStack() {
+        if (window.innerWidth <= 768) {
+            const cards = document.querySelectorAll('.info-card');
+            cards.forEach((card, index) => {
+                card.classList.add(`stacked-${index + 1}`);
+            });
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        const currentPosition = parseInt(card.className.match(/stacked-(\d)/)[1]);
+                        card.classList.add('moving-down');
+
+                        setTimeout(() => {
+                            cards.forEach(c => {
+                                const pos = parseInt(c.className.match(/stacked-(\d)/)[1]);
+                                c.classList.remove(`stacked-${pos}`);
+                                let newPos = pos - 1;
+                                if (newPos < 1) newPos = 4;
+                                if (c === card) newPos = 4;
+                                c.classList.add(`stacked-${newPos}`);
+                            });
+                            card.classList.remove('moving-down');
+                        }, 500);
+                    }
+                });
+            });
+        }
+    }
+
+    // Initialize card stack on load and resize
+    window.addEventListener('load', initializeCardStack);
+    window.addEventListener('resize', initializeCardStack);
+});
